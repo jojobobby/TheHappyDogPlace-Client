@@ -8,37 +8,43 @@ jobs:
     runs-on: ubuntu-latest
     environment: Workflow
     steps:
-      - name: Checkout # UNDERSTOOD
+      - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Set up Docker Buildx # UNDERSTOOD
+      - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
       
-      - name: Set up QEMU # PARTICALLY UNDERSTOOD
+      - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 
-      - name: Configure AWS credentials # UNDERSTOOD
+      - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Login to Amazon ECR # UNDERSTOOD
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
+      - name: Verify AWS identity
+        run: aws sts get-caller-identity
 
-      - name: Set short sha # UNDERSTOOD
+      - name: Login to Amazon ECR Public
+        run: |
+          aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws
+
+      - name: Check Docker config
+        run: cat ~/.docker/config.json
+
+      - name: Set short sha
         id: sha_short
         run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
-      - name: Build and push # UNDERSTOOD
+      - name: Build and push
         uses: docker/build-push-action@v4
         with:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ vars.ECR_REPOSITORY }}:${{ steps.sha_short.outputs.sha_short }} #UNDERSTOOD
-          cache-from: type=local,src=/tmp/.buildx-cache # PARTICALLY UNDERSTOOD
+          tags: ${{ vars.ECR_REPOSITORY }}:${{ steps.sha_short.outputs.sha_short }}
+          cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
           provenance: false
