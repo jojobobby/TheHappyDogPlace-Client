@@ -1,4 +1,4 @@
-name: ci
+name: push-to-ecr
 
 on: 
   workflow_dispatch:
@@ -6,6 +6,7 @@ on:
 jobs:
   docker:
     runs-on: ubuntu-latest
+    environment: Workflow
     steps:
       - name: Checkout # UNDERSTOOD
         uses: actions/checkout@v3
