@@ -38,7 +38,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ steps.sha_short.outputs.sha_short }}
+          tags: ${{ env.ECR_REPOSITORY }}:${{ steps.sha_short.outputs.sha_short }}
           cache-from: type=local,src=/tmp/.buildx-cache # PARTICALLY UNDERSTOOD
           cache-to: type=local,dest=/tmp/.buildx-cache
           provenance: false
