@@ -46,12 +46,29 @@ jobs:
           cache-to: type=local,dest=/tmp/.buildx-cache
           provenance: false #I understand everything before this line
 
-      - name: Update ECS task definition
-        run: | 
-          TASK_DEFINITION=$(aws ecs describe-task-definition --task-definition ${{ vars.ECS_TASK_DEFINITION }} --query taskDefinition)
-          NEW_TASK_DEFINITION=$(echo $TASK_DEFINITION | jq '.containerDefinitions[0].image = "${{ vars.ECR_REPOSITORY }}:${{ steps.sha_short.outputs.sha_short }}"')
-          aws ecs register-task-definition --family ${{ vars.ECS_TASK_DEFINITION }} --cli-input-json "$NEW_TASK_DEFINITION"
+      - name: Fill in the new image ID in the Amazon ECS task definition
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@c804dfbdd57f713b6c079302a4c01db7017a36fc
+        with:
+          task-definition: ${{ env.ECS_TASK_DEFINITION }}
+          container-name: ${{ env.CONTAINER_NAME }}
+          image: ${{ vars.ECR_REPOSITORY }}:${{ steps.sha_short.outputs.sha_short }}
   
-      - name: Update ECS service with new task definition
-        run: |
-          aws ecs update-service --cluster ${{ vars.ECS_CLUSTER }} --service ${{ vars.ECS_SERVICE }} --task-definition ${{ vars.ECS_TASK_DEFINITION }}
+      - name: Deploy Amazon ECS task definition
+        uses: aws-actions/amazon-ecs-deploy-task-definition@df9643053eda01f169e64a0e60233aacca83799a
+        with:
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          service: ${{ env.ECS_SERVICE }}
+          cluster: ${{ env.ECS_CLUSTER }}
+          wait-for-service-stability: true
+
+
+      # - name: Update ECS task definition
+      #   run: | 
+      #     TASK_DEFINITION=$(aws ecs describe-task-definition --task-definition ${{ vars.ECS_TASK_DEFINITION }} --query taskDefinition)
+      #     NEW_TASK_DEFINITION=$(echo $TASK_DEFINITION | jq '.containerDefinitions[0].image = "${{ vars.ECR_REPOSITORY }}:${{ steps.sha_short.outputs.sha_short }}"')
+      #     aws ecs register-task-definition --family ${{ vars.ECS_TASK_DEFINITION }} --cli-input-json "$NEW_TASK_DEFINITION"
+  
+      # - name: Update ECS service with new task definition
+      #   run: |
+      #     aws ecs update-service --cluster ${{ vars.ECS_CLUSTER }} --service ${{ vars.ECS_SERVICE }} --task-definition ${{ vars.ECS_TASK_DEFINITION }}
