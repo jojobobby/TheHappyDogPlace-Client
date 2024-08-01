@@ -28,9 +28,9 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Set short sha # DONT UNDERSTAND
+      - name: Set short sha # UNDERSTOOD
         id: sha_short
-        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+        run: echo ${{ env.ECR_REPOSITORY }}:"sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
       - name: Build and push # UNDERSTOOD
         uses: docker/build-push-action@v4
@@ -38,7 +38,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ env.ECR_REPOSITORY }}:${{ steps.sha_short.outputs.sha_short }}
+          tags: ${{ env.ECR_REPOSITORY }}:${{ steps.sha_short.outputs.sha_short }} #UNDERSTOOD
           cache-from: type=local,src=/tmp/.buildx-cache # PARTICALLY UNDERSTOOD
           cache-to: type=local,dest=/tmp/.buildx-cache
           provenance: false
