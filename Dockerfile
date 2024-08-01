@@ -14,13 +14,13 @@ RUN yarn install
 COPY . .
 
 #Build to create the compiled files servable from the ./build directory
-RUN yarn build
+RUN yarn run build
 
 #install serve globally (to ensure it can be ran anywhere) to serve the compiled files 
-RUN yarn add serve -g
+RUN yarn global add serve
 
 #expose the port the app will be running on
 EXPOSE 3000
 
 #Commands to run the application, serves the compiled files from the ./build directory -s is for single page applications
-ENTRYPOINT ["yarn", "serve", "-s", "build"]
+ENTRYPOINT ["yarn", "serve", "-s", "build", "-l", "0.0.0.0"]
