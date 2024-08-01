@@ -1,12 +1,12 @@
 name: ci
 
 on: 
-  trigger:
+  workflow_dispatch:
 
 jobs:
   docker:
     runs-on: ubuntu-latest
-        steps:
+    steps:
       - name: Checkout # UNDERSTOOD
         uses: actions/checkout@v3
 
