@@ -23,4 +23,4 @@ RUN yarn global add serve
 EXPOSE 3000
 
 #Commands to run the application, serves the compiled files from the ./build directory -s is for single page applications
-ENTRYPOINT ["yarn", "serve", "-s", "build", "-l", "0.0.0.0"]
+ENTRYPOINT ["yarn", "serve", "-s", "build", "-l", "tcp://0.0.0.0:3000"]
