@@ -2,6 +2,9 @@ name: push-to-ecr
 
 on: 
   workflow_dispatch:
+  push:
+    branches:
+      - 'main'
 
 jobs:
   docker:
