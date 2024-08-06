@@ -44,13 +44,13 @@ jobs:
           tags: ${{ vars.ECR_REPOSITORY }}:${{ steps.sha_short.outputs.sha_short }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
-          provenance: false #I understand everything before this line
-
+          provenance: false 
+          
       - name: Fill in the new image ID in the Amazon ECS task definition
         id: task-def
         uses: aws-actions/amazon-ecs-render-task-definition@c804dfbdd57f713b6c079302a4c01db7017a36fc
         with:
-          task-definition: "./task-definition.json"
+          task-definition: "./task_definition.json"
           container-name: ${{ vars.CONTAINER_NAME }}
           image: ${{ vars.ECR_REPOSITORY }}:${{ steps.sha_short.outputs.sha_short }}
   
