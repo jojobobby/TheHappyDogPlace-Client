@@ -3,7 +3,8 @@
         {
             "name": "api-client-app",
             "image": "public.ecr.aws/o5d7c2o1/api-client:3c64894-2",
-            "cpu": 0,
+            "cpu": 256,
+            "memory": 512,
             "portMappings": [
                 {
                     "name": "api-client-app-80-tcp",
@@ -40,8 +41,8 @@
     "requiresCompatibilities": [
         "FARGATE"
     ],
-    "cpu": "1024",
-    "memory": "2048",
+    "cpu": "256",
+    "memory": "512",
     "runtimePlatform": {
         "cpuArchitecture": "X86_64",
         "operatingSystemFamily": "LINUX"
