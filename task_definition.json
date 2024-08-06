@@ -1,5 +1,4 @@
 {
-    "taskDefinitionArn": "arn:aws:ecs:us-east-2:339712999516:task-definition/api-client-tasks:4",
     "containerDefinitions": [
         {
             "name": "api-client-app",
@@ -36,34 +35,8 @@
     "family": "api-client-tasks",
     "executionRoleArn": "arn:aws:iam::339712999516:role/ecsTaskExecutionRole",
     "networkMode": "awsvpc",
-    "revision": 4,
     "volumes": [],
-    "status": "ACTIVE",
-    "requiresAttributes": [
-        {
-            "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
-        },
-        {
-            "name": "ecs.capability.execution-role-awslogs"
-        },
-        {
-            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
-        },
-        {
-            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
-        },
-        {
-            "name": "ecs.capability.task-eni"
-        },
-        {
-            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.29"
-        }
-    ],
     "placementConstraints": [],
-    "compatibilities": [
-        "EC2",
-        "FARGATE"
-    ],
     "requiresCompatibilities": [
         "FARGATE"
     ],
@@ -73,7 +46,5 @@
         "cpuArchitecture": "X86_64",
         "operatingSystemFamily": "LINUX"
     },
-    "registeredAt": "2024-08-01T16:57:26.329Z",
-    "registeredBy": "arn:aws:iam::339712999516:root",
     "tags": []
 }
