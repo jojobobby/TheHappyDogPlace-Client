@@ -1,13 +1,13 @@
 name: push-to-ecr
 
-on: 
+on:
   workflow_dispatch:
   push:
     branches:
       - 'main'
 
 jobs:
-  docker:
+  Deploy_to_Amazon_ECS:
     runs-on: ubuntu-latest
     environment: Workflow
     steps:

@@ -1,5 +1,5 @@
 #grabbing a node version 21 image from docker hub
-FROM node:21    
+FROM node:21
 
 #create an app directory and set it as the working directory
 WORKDIR /app
@@ -16,11 +16,11 @@ COPY . .
 #Build to create the compiled files servable from the ./build directory
 RUN yarn run build
 
-#install serve globally (to ensure it can be ran anywhere) to serve the compiled files 
+#install serve globally (to ensure it can be ran anywhere) to serve the compiled files
 RUN yarn global add serve
 
 #expose the port the app will be running on
-EXPOSE 3000
+EXPOSE 80
 
 #Commands to run the application, serves the compiled files from the ./build directory -s is for single page applications
-ENTRYPOINT ["yarn", "serve", "-s", "build", "-l", "tcp://0.0.0.0:3000"]
+ENTRYPOINT ["yarn", "serve", "-s", "build", "-l", "tcp://0.0.0.0:80"]
