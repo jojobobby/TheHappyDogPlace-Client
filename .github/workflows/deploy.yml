@@ -23,7 +23,7 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-2
-          
+
       - name: Verify AWS identity
         run: aws sts get-caller-identity
 
@@ -31,14 +31,11 @@ jobs:
         run: |
           aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws
 
-      - name: Check Docker config
-        run: cat ~/.docker/config.json
-
       - name: Set short sha
         id: sha_short
         run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
-      - name: Build and push
+      - name: Build And Push Docker Image
         uses: docker/build-push-action@v4
         with:
           context: .
@@ -47,31 +44,20 @@ jobs:
           tags: ${{ vars.ECR_REPOSITORY }}:${{ steps.sha_short.outputs.sha_short }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
-          provenance: false 
+          provenance: false
 
-      - name: Fill in the new image ID in the Amazon ECS task definition
+      - name: Update Amazon ECS Task Definition
         id: task-def
         uses: aws-actions/amazon-ecs-render-task-definition@c804dfbdd57f713b6c079302a4c01db7017a36fc
         with:
           task-definition: "./task_definition.json"
           container-name: ${{ vars.CONTAINER_NAME }}
           image: ${{ vars.ECR_REPOSITORY }}:${{ steps.sha_short.outputs.sha_short }}
-  
-      - name: Deploy Amazon ECS task definition
+
+      - name: Deploy Amazon ECS Task Definition
         uses: aws-actions/amazon-ecs-deploy-task-definition@df9643053eda01f169e64a0e60233aacca83799a
         with:
           task-definition: ${{ steps.task-def.outputs.task-definition }}
           service: ${{ vars.ECS_SERVICE }}
           cluster: ${{ vars.ECS_CLUSTER }}
           wait-for-service-stability: true
-
-
-      # - name: Update ECS task definition
-      #   run: | 
-      #     TASK_DEFINITION=$(aws ecs describe-task-definition --task-definition ${{ vars.ECS_TASK_DEFINITION }} --query taskDefinition)
-      #     NEW_TASK_DEFINITION=$(echo $TASK_DEFINITION | jq '.containerDefinitions[0].image = "${{ vars.ECR_REPOSITORY }}:${{ steps.sha_short.outputs.sha_short }}"')
-      #     aws ecs register-task-definition --family ${{ vars.ECS_TASK_DEFINITION }} --cli-input-json "$NEW_TASK_DEFINITION"
-  
-      # - name: Update ECS service with new task definition
-      #   run: |
-      #     aws ecs update-service --cluster ${{ vars.ECS_CLUSTER }} --service ${{ vars.ECS_SERVICE }} --task-definition ${{ vars.ECS_TASK_DEFINITION }}
