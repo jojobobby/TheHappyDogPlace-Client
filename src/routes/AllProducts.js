@@ -41,14 +41,19 @@ const ProductCard = ({ product, addToCart }) => {
   );
 };
 
-const Storefront = () => {
+const AllProducts = () => {
   const { dispatch } = useCart();
   
-  const featuredProducts = [
+  // This is a mock product list. In a real application, you would fetch this data from an API
+  const allProducts = [
     { id: 1, name: 'Luxury Dog Bed', price: 129.99, image: '/api/placeholder/300/200' },
     { id: 2, name: 'Gourmet Treats', price: 24.99, image: '/api/placeholder/300/200' },
     { id: 3, name: 'Interactive Toy', price: 39.99, image: '/api/placeholder/300/200' },
     { id: 4, name: 'Stylish Collar', price: 19.99, image: '/api/placeholder/300/200' },
+    { id: 5, name: 'Dog Shampoo', price: 14.99, image: '/api/placeholder/300/200' },
+    { id: 6, name: 'Chew Toys Set', price: 29.99, image: '/api/placeholder/300/200' },
+    { id: 7, name: 'Dog Bowl', price: 9.99, image: '/api/placeholder/300/200' },
+    { id: 8, name: 'Dog Leash', price: 17.99, image: '/api/placeholder/300/200' },
   ];
 
   const addToCart = (product) => {
@@ -58,39 +63,16 @@ const Storefront = () => {
 
   return (
     <Layout>
-      <section className="bg-gradient-to-r from-blue-500 to-pink-500 text-white py-20">
-        <div className="container mx-auto text-center">
-          <h2 className="text-5xl font-bold mb-4">Suprise your favorite pet</h2>
-          <p className="text-xl mb-8">Discover fun items for your furry friend</p>
-          <Link 
-            to="/all-products" 
-            className="bg-white text-purple-500 px-6 py-3 rounded-full font-bold hover:bg-gray-100 transition duration-300"
-          >
-            Shop Now
-          </Link>
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-3xl font-bold mb-8 text-center">All Products</h1>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {allProducts.map((product) => (
+            <ProductCard key={product.id} product={product} addToCart={addToCart} />
+          ))}
         </div>
-      </section>
-
-      <section className="py-16 bg-gray-100">
-        <div className="container mx-auto">
-          <h3 className="text-3xl font-bold text-center mb-12">Featured Products</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {featuredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} addToCart={addToCart} />
-            ))}
-          </div>
-          <div className="text-center mt-12">
-            <Link 
-              to="/all-products" 
-              className="bg-blue-500 text-white px-6 py-3 rounded-full font-bold hover:bg-blue-600 transition duration-300"
-            >
-              View All Products
-            </Link>
-          </div>
-        </div>
-      </section>
+      </div>
     </Layout>
   );
 };
 
-export default Storefront;
+export default AllProducts;
